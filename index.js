@@ -70,8 +70,31 @@ app.delete("/deleteTask/:id", (req, res) => {
 	});
 });
 
+// Insert a new service
+app.post("/admin/addEvent", (req, res) => {
+	const newTask = req.body;
+	servicesCollection.insertOne(newTask).then((result) => {
+		console.log(result, "Task Inserted");
+		res.send(result.insertedCount > 0);
+	});
+});
 
+// Get All Volunteer Event Information
+app.get("/loadVolunteerList", (req, res) => {
+	eventsCollection.find({}).toArray((err, docs) => {
+		res.send(docs);
+		console.log(docs);
+	});
+});
 
+// Delete Event Information from Admin
+app.delete("/admin/deleteTask/:id", (req, res) => {
+	console.log(req.params.id);
+	eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
+		console.log(result, "Task deleted");
+		res.send(result.deletedCount > 0);
+	});
+});
 
 
 });
