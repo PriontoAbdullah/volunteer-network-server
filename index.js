@@ -32,7 +32,7 @@ client.connect((err) => {
 		});
 	});
 
-	
+
 	// Get all services Information
 	app.get('/volunteerTasks', (req, res) => {
 		servicesCollection.find({}).toArray((err, documents) => {
@@ -41,8 +41,34 @@ client.connect((err) => {
 	});
 
 
+// Added Volunteer Event Information
+  app.post("/registerVolunteer", (req, res) => {
+		const newVolunteer = req.body;
+		eventsCollection.insertOne(newVolunteer).then((result) => {
+			console.log(result, "Task Inserted");
+			res.send(result.insertedCount > 0);
+		});
+  });
 
 
+// GetVolunteer Event Information for user specific email
+  app.get("/events", (req, res) => {
+	console.log(req.query.email);
+	eventsCollection.find({ email: req.query.email }).toArray((error, documents) => {
+		res.send(documents);
+		console.log(error);
+	});
+});
+
+
+// Delete Event Information for user 
+app.delete("/deleteTask/:id", (req, res) => {
+	console.log(req.params.id);
+	eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
+		console.log(result, "Deleted");
+		res.send(result.deletedCount > 0);
+	});
+});
 
 
 
