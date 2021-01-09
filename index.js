@@ -32,7 +32,6 @@ client.connect((err) => {
 		});
 	});
 
-
 	// Get all services Information
 	app.get('/volunteerTasks', (req, res) => {
 		servicesCollection.find({}).toArray((err, documents) => {
@@ -40,63 +39,66 @@ client.connect((err) => {
 		});
 	});
 
+	// Get search query services Information
+	app.get('/tasks', (req, res) => {
+		const filter = req.query.filter;
+		servicesCollection.find({title: {$regex: filter}}).toArray((err, documents) => {
+			res.send(documents);
+		});
+	});
 
-// Added Volunteer Event Information
-  app.post("/registerVolunteer", (req, res) => {
+	// Added Volunteer Event Information
+	app.post('/registerVolunteer', (req, res) => {
 		const newVolunteer = req.body;
 		eventsCollection.insertOne(newVolunteer).then((result) => {
-			console.log(result, "Task Inserted");
+			console.log(result, 'Task Inserted');
 			res.send(result.insertedCount > 0);
 		});
-  });
-
-
-// GetVolunteer Event Information for user specific email
-  app.get("/events", (req, res) => {
-	console.log(req.query.email);
-	eventsCollection.find({ email: req.query.email }).toArray((error, documents) => {
-		res.send(documents);
-		console.log(error);
 	});
-});
 
-
-// Delete Event Information for user 
-app.delete("/deleteTask/:id", (req, res) => {
-	console.log(req.params.id);
-	eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
-		console.log(result, "Deleted");
-		res.send(result.deletedCount > 0);
+	// GetVolunteer Event Information for user specific email
+	app.get('/events', (req, res) => {
+		console.log(req.query.email);
+		eventsCollection.find({ email: req.query.email }).toArray((error, documents) => {
+			res.send(documents);
+			console.log(error);
+		});
 	});
-});
 
-// Insert a new service
-app.post("/admin/addEvent", (req, res) => {
-	const newTask = req.body;
-	servicesCollection.insertOne(newTask).then((result) => {
-		console.log(result, "Task Inserted");
-		res.send(result.insertedCount > 0);
+	// Delete Event Information for user
+	app.delete('/deleteTask/:id', (req, res) => {
+		console.log(req.params.id);
+		eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
+			console.log(result, 'Deleted');
+			res.send(result.deletedCount > 0);
+		});
 	});
-});
 
-// Get All Volunteer Event Information
-app.get("/loadVolunteerList", (req, res) => {
-	eventsCollection.find({}).toArray((err, docs) => {
-		res.send(docs);
-		console.log(docs);
+	// Insert a new service
+	app.post('/admin/addEvent', (req, res) => {
+		const newTask = req.body;
+		servicesCollection.insertOne(newTask).then((result) => {
+			console.log(result, 'Task Inserted');
+			res.send(result.insertedCount > 0);
+		});
 	});
-});
 
-// Delete Event Information from Admin
-app.delete("/admin/deleteTask/:id", (req, res) => {
-	console.log(req.params.id);
-	eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
-		console.log(result, "Task deleted");
-		res.send(result.deletedCount > 0);
+	// Get All Volunteer Event Information
+	app.get('/loadVolunteerList', (req, res) => {
+		eventsCollection.find({}).toArray((err, docs) => {
+			res.send(docs);
+			console.log(docs);
+		});
 	});
-});
 
-
+	// Delete Event Information from Admin
+	app.delete('/admin/deleteTask/:id', (req, res) => {
+		console.log(req.params.id);
+		eventsCollection.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
+			console.log(result, 'Task deleted');
+			res.send(result.deletedCount > 0);
+		});
+	});
 });
 
 // Root Route
